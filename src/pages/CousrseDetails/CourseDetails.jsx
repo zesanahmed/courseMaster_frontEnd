@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  enrollCourseAsync,
+  fetchMyEnrollments,
+  clearSuccess,
+} from "../../store/slices/enrollmentSlice";
+import {
   fetchCourseById,
   clearCurrentCourse,
 } from "../../store/slices/coursesSlice";
-import {
-  enrollCourseAsync,
-  clearSuccess,
-} from "../../store/slices/enrollmentSlice";
 import { getMeAsync } from "../../store/slices/authSlice";
 
 export default function CourseDetails() {
@@ -28,6 +29,11 @@ export default function CourseDetails() {
     enrollments: myEnrollments,
   } = useSelector((state) => state.enrollment);
   const { user, token, isAuthenticated } = useSelector((state) => state.auth);
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchMyEnrollments());
+    }
+  }, [token, dispatch]);
   const [selectedBatchId, setSelectedBatchId] = useState(null);
 
   useEffect(() => {
